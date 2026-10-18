@@ -2,13 +2,11 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 
-// GET /api/destinations - Search, Filter, and Sort from External API
+//GET /api/destinations 
 router.get('/', async (req, res, next) => {
     try {
         const { city = 'Paris', category = 'interesting_places', sort } = req.query;
         const apiKey = process.env.OPENTRIPMAP_API_KEY;
-
-        // 1. Get coordinates for the city first using OpenTripMap Geoname API
         const geoRes = await axios.get(`https://api.opentripmap.com/0.1/en/places/geoname`, {
             params: { name: city, apikey: apiKey }
         });
@@ -19,7 +17,6 @@ router.get('/', async (req, res, next) => {
 
         const { lat, lon } = geoRes.data;
 
-        // 2. Fetch places around coordinates
         const placesRes = await axios.get(`https://api.opentripmap.com/0.1/en/places/radius`, {
             params: {
                 radius: 10000,
@@ -40,10 +37,9 @@ router.get('/', async (req, res, next) => {
             rate: place.properties.rate
         }));
 
-        // Filter out places with no names
+        
         places = places.filter(p => p.name !== 'Unnamed Location');
 
-        // Server-side Sorting option
         if (sort === 'name') {
             places.sort((a, b) => a.name.localeCompare(b.name));
         } else if (sort === 'rate') {
@@ -56,7 +52,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-// GET /api/destinations/:id - Get specific destination details
+// GET /api/destinations/:id
 router.get('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Itinerary = require('../models/Itinerary');
 
-// GET /api/itinerary - View all saved itinerary items
+// GET /api/itinerary - saved itinerary items
 router.get('/', async (req, res, next) => {
     try {
         const items = await Itinerary.find().sort({ createdAt: -1 });
@@ -12,7 +12,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-// POST /api/itinerary - Add destination to itinerary
+// POST /api/itinerary - Add destination
 router.post('/', async (req, res, next) => {
     try {
         const { destinationId, name, category, location, description, notes } = req.body;
@@ -35,7 +35,7 @@ router.post('/', async (req, res, next) => {
     }
 });
 
-// DELETE /api/itinerary/:id - Remove destination from itinerary
+// DELETE /api/itinerary/:id - Remove destination
 router.delete('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
